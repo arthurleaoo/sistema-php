@@ -1,0 +1,27 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Editar Usuário</title>
+  <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Editar Dados</h2>
+    <form action="/sistema-php/sistema-php/backend/auth/redefinirSenha.php" method="POST">
+      <div class="input-container">
+        <label for="email">email:</label>
+        <input type="email" name="email" id="email" required placeholder="Digite seu email">
+      </div>
+      <div class="input-container">
+        <label for="senha">Nova senha:</label>
+        <input type="password" name="senha" id="senha" required placeholder="Digite sua nova senha">
+      </div>
+      <button type="submit">Atualizar</button>
+    </form>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Excluir Movimentação</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+  <!-- Botão Voltar -->
+  <a href="listarMovimentacoes.html"
+     class="inline-block m-5 text-gray-700 bg-gray-200 px-4 py-2 rounded-md hover:bg-gray-300">
+    &lt; Voltar
+  </a>
+
+  <!-- Container -->
+  <div class="bg-white w-[400px] mx-auto mt-16 p-8 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold text-gray-800 text-center mb-6">Excluir Movimentação</h2>
+
+    <form action="../../backend/movimentacoes/excluirMovimentacoes.php" method="POST" class="flex flex-col">
+
+      <input type="number" name="id" placeholder="ID da movimentação" required
+        class="border border-gray-300 rounded-md p-3 mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+      <button type="submit"
+        class="bg-red-600 hover:bg-red-700 text-white font-bold p-3 rounded-md">
+        Excluir
+      </button>
+    </form>
+  </div>
+
+</body>
+</html>
+

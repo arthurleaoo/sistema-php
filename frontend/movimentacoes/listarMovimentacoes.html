@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Listar Movimentações</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-start justify-center p-10">
+
+  <div class="bg-white rounded-xl shadow-md p-8 w-full max-w-4xl">
+    <a href="../dashboard.html"
+       class="inline-block mb-4 text-gray-700 bg-gray-200 px-4 py-2 rounded-md hover:bg-gray-300">
+      &lt; Voltar
+    </a>
+
+    <h2 class="text-2xl font-bold text-[#2c3e50] text-center mb-6">Minhas Movimentações</h2>
+
+    <div id="resultado"></div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal-confirmacao"
+       class="fixed inset-0 bg-black/50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-lg p-6 w-[300px] text-center">
+      <p class="mb-4 text-lg">Tem certeza que deseja excluir esta movimentação?</p>
+      <div class="flex justify-center gap-4">
+        <button id="btn-confirmar"
+          class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md">
+          Confirmar
+        </button>
+        <button onclick="fecharModal()"
+          class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let idSelecionado = null;
+
+    function confirmarExclusao(id) {
+      idSelecionado = id;
+      document.getElementById('modal-confirmacao').classList.remove('hidden');
+    }
+
+    function fecharModal() {
+      document.getElementById('modal-confirmacao').classList.add('hidden');
+      idSelecionado = null;
+    }
+
+    document.getElementById('btn-confirmar').addEventListener('click', () => {
+      if (!idSelecionado) return;
+
+      fetch(`../../backend/movimentacoes/excluirMovimentacoes.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `id=${idSelecionado}`
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'ok') {
+          alert('Movimentação excluída com sucesso.');
+          carregar();
+        } else {
+          alert('Erro ao excluir movimentação.');
+        }
+      })
+      .catch(() => alert('Erro inesperado.'));
+      fecharModal();
+    });
+
+    function carregar() {
+      fetch('../../backend/movimentacoes/listarMovimentacoes.php')
+        .then(resp => resp.json())
+        .then(data => {
+          if (data.status === 'ok') {
+            let html = `
+              <div class="overflow-x-auto">
+              <table class="w-full border-collapse">
+                <thead>
+                  <tr>
+                    <th class="bg-gray-100 border p-3 text-left">ID</th>
+                    <th class="bg-gray-100 border p-3 text-left">Descrição</th>
+                    <th class="bg-gray-100 border p-3 text-left">Tipo</th>
+                    <th class="bg-gray-100 border p-3 text-left">Valor</th>
+                    <th class="bg-gray-100 border p-3 text-left">Data</th>
+                    <th class="bg-gray-100 border p-3 text-center">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+            `;
+            data.dados.forEach(m => {
+              html += `
+                <tr class="hover:bg-gray-50">
+                  <td class="border p-3">${m.id}</td>
+                  <td class="border p-3">${m.descricao}</td>
+                  <td class="border p-3">${m.tipo}</td>
+                  <td class="border p-3">R$ ${parseFloat(m.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+                  <td class="border p-3">${new Date(m.data).toLocaleDateString('pt-BR')}</td>
+                  <td class="border p-3">
+                    <div class="flex gap-2 justify-center">
+                      <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1 rounded-md"
+                        onclick="window.location.href='atualizarMovimentacoes.html?id=${m.id}'">
+                        Atualizar
+                      </button>
+                      <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-md"
+                        onclick="confirmarExclusao(${m.id})">
+                        Deletar
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              `;
+            });
+            html += `</tbody></table></div>`;
+            document.getElementById('resultado').innerHTML = html;
+          } else {
+            document.getElementById('resultado').innerText = data.mensagem;
+          }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', carregar);
+  </script>
+
+</body>
+</html>

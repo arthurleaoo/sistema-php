@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <link rel="stylesheet" href="../css/auth.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Login</h2>
+    <form action="/sistema-php/sistema-php/backend/auth/login.php" method="POST">
+      <div class="input-container">
+        <i class="fas fa-envelope"></i>
+        <input type="email" name="email" placeholder="Seu e-mail" required>
+      </div>
+      <div class="input-container">
+        <i class="fas fa-lock"></i>
+        <input type="password" name="senha" placeholder="Sua senha" required>
+      </div>
+      <button type="submit">Entrar</button>
+    </form>
+
+     <div class="auth-links">
+      <p>Não tem login? <a href="criar.html">Cadastre-se agora</a></p>
+      <p><a href="redefinirSenha.html">Esqueceu a senha?</a></p>
+    </div>
+
+  </div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.get('atualizado') === '1') {
+    alert('Dados atualizados com sucesso!');
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
+  if (params.get('erro') === '1') {
+    // Cria mensagem de erro
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'mensagem-erro';
+    errorDiv.textContent = 'E-mail ou senha incorretos.';
+
+    const form = document.querySelector('form');
+    const senhaInput = form.querySelector('input[name="senha"]');
+    const emailInput = form.querySelector('input[name="email"]');
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    // Insere mensagem antes do botão
+    form.insertBefore(errorDiv, submitButton);
+
+    // Limpa os campos
+    emailInput.value = '';
+    senhaInput.value = '';
+
+    // Remove parâmetros da URL
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+</script>
+
+</body>
+</html>

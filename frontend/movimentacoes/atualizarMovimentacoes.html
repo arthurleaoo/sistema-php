@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Atualizar Movimentação</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+  <!-- Botão Voltar -->
+  <a href="listarMovimentacoes.html"
+     class="inline-block m-5 text-gray-700 bg-gray-200 px-4 py-2 rounded-md hover:bg-gray-300">
+    &lt; Voltar
+  </a>
+
+  <!-- Container -->
+  <div class="bg-white w-[400px] mx-auto mt-16 p-8 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold text-gray-800 text-center mb-6">Atualizar Movimentação</h2>
+
+    <form id="form-atualizar" class="flex flex-col">
+
+      <input type="hidden" name="id" id="id">
+
+      <select name="tipo" id="tipo" required
+        class="border border-gray-300 rounded-md p-3 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <option value="">Selecione o tipo</option>
+        <option value="entrada">Entrada</option>
+        <option value="saida">Saída</option>
+      </select>
+
+      <input type="number" step="0.01" name="valor" id="valor" placeholder="Valor" required
+        class="border border-gray-300 rounded-md p-3 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+      <input type="text" name="descricao" id="descricao" placeholder="Descrição" required
+        class="border border-gray-300 rounded-md p-3 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+      <input type="date" name="data" id="data" required
+        class="border border-gray-300 rounded-md p-3 mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+      <button type="submit"
+        class="bg-blue-600 hover:bg-blue-700 text-white font-bold p-3 rounded-md">
+        Atualizar
+      </button>
+    </form>
+  </div>
+
+  <script>
+    function getIdFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('id');
+    }
+
+    function preencherFormulario(dados) {
+      document.getElementById('id').value = dados.id;
+      document.getElementById('tipo').value = dados.tipo;
+      document.getElementById('valor').value = dados.valor;
+      document.getElementById('descricao').value = dados.descricao;
+      document.getElementById('data').value = dados.data;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const id = getIdFromURL();
+      if (!id) {
+        alert('ID inválido.');
+        window.location.href = 'listarMovimentacoes.html';
+        return;
+      }
+
+      fetch(`../../backend/movimentacoes/buscarMovimentacoes.php?id=${id}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'ok') {
+            preencherFormulario(data.movimentacao);
+          } else {
+            alert('Erro ao carregar movimentação.');
+            window.location.href = 'listarMovimentacoes.html';
+          }
+        });
+
+      document.getElementById('form-atualizar').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        fetch('../../backend/movimentacoes/atualizarMovimentacoes.php', {
+          method: 'POST',
+          body: new URLSearchParams(formData)
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'ok') {
+            alert('Movimentação atualizada com sucesso!');
+            window.location.href = 'listarMovimentacoes.html';
+          } else {
+            alert('Erro ao atualizar.');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
