@@ -8,7 +8,7 @@
 <body class="bg-gray-100 min-h-screen flex flex-col items-center px-4 py-10">
 
   <!-- Botão Voltar -->
-  <a href="../frontend/dashboard.html"
+  <a href="../dashboard.html"
      class="self-start ml-4 mb-6 flex items-center gap-2 text-gray-700 bg-gray-200 px-4 py-2 rounded-md hover:bg-gray-300 transition">
     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -22,27 +22,17 @@
 
     <div class="space-y-4 text-gray-700">
       <div>
-        <span class="block text-sm font-medium text-gray-500">Login</span>
-        <p id="view-login" class="text-lg font-semibold">--</p>
+        <span class="block text-sm font-medium text-gray-500">Nome</span>
+        <p id="view-nome" class="text-lg font-semibold">--</p>
       </div>
 
       <div>
         <span class="block text-sm font-medium text-gray-500">E-mail</span>
         <p id="view-email" class="text-lg font-semibold">--</p>
       </div>
-
-      <div>
-        <span class="block text-sm font-medium text-gray-500">Telefone</span>
-        <p id="view-telefone" class="text-lg font-semibold">--</p>
-      </div>
-
-      <div>
-        <span class="block text-sm font-medium text-gray-500">CPF</span>
-        <p id="view-cpf" class="text-lg font-semibold">--</p>
-      </div>
     </div>
 
-    <div class="mt-8 flex justify-end">
+    <div class="mt-8 flex justify-between gap-2">
       <a href="./perfil.html"
          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition font-semibold">
         Editar
@@ -51,21 +41,18 @@
   </div>
 
   <script>
-    // Simulação de dados do usuário
-    const dadosUsuario = {
-      login: 'leonardo123',
-      email: 'leonardo@example.com',
-      telefone: '(11) 91234-5678',
-      cpf: '123.456.789-00'
-    };
-
-    // Preenche os dados na tela
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('view-login').textContent = dadosUsuario.login;
-      document.getElementById('view-email').textContent = dadosUsuario.email;
-      document.getElementById('view-telefone').textContent = dadosUsuario.telefone;
-      document.getElementById('view-cpf').textContent = dadosUsuario.cpf;
-    });
+    // Busca os dados reais do usuário
+    fetch('/sistema-php/sistema-php/backend/usuarios/getUsuario.php')
+      .then(resp => resp.json())
+      .then(res => {
+        if (res.status === 'ok') {
+          document.getElementById('view-nome').textContent = res.dados.nome;
+          document.getElementById('view-email').textContent = res.dados.email;
+        } else {
+          alert('Erro ao carregar dados do usuário.');
+        }
+      })
+      .catch(() => alert('Erro de comunicação com o servidor.'));
   </script>
 
 </body>

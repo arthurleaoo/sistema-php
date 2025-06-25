@@ -1,106 +1,209 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard de Movimentações</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-</head>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-<body class="font-['Roboto'] bg-gray-100 text-gray-800 flex flex-col min-h-screen">
+  <body class="font-['Roboto'] bg-gray-100 text-gray-800 min-h-screen">
+    <!-- Botão Mobile para abrir Sidebar -->
+    <button id="menu-toggle" class="md:hidden fixed top-4 left-4 z-50 bg-[#2c3e50] text-white p-2 rounded">
+      &#9776;
+    </button>
 
-    <!-- Cabeçalho -->
-    <header class="bg-[#2c3e50] text-white py-5 text-center shadow-md">
-        <h1 class="text-2xl md:text-3xl font-bold">Dashboard de Movimentações Financeiras</h1>
-    </header>
+    <!-- Sidebar -->
+    <aside
+      id="sidebar"
+      class="w-64 bg-[#2c3e50] text-white min-h-screen flex flex-col justify-between fixed top-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-40"
+    >
+      <div>
+        <div class="flex items-center justify-center py-6">
+          <div
+            class="w-16 h-16 rounded-full flex items-center justify-center text-xl font-bold uppercase shadow-md"
+          >
+            <img
+              src="https://www.riem.wasserwacht.de/wp-content/uploads/sites/110/2024/05/ww_riem_phantombild-1024x1024.png"
+              alt="usuario-icon"
+              class="rounded-full object-cover w-16 h-16"
+            />
+          </div>
+        </div>
 
-    <main class="flex-1 p-5 flex flex-col items-center">
+        <nav class="px-4 space-y-4">
+          <a
+            href="../frontend/usuarios/infoUsuario.html"
+            class="flex items-center justify-center bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white font-semibold transition"
+          >
+            Editar Perfil
+          </a>
+          <button
+            id="btn-excluir"
+            class="flex items-center justify-center w-full bg-red-500 hover:bg-red-600 px-4 py-2 rounded-md text-white font-semibold transition"
+          >
+            Excluir Conta
+          </button>
+          <button
+            onclick="window.location.href='../frontend/usuarios/login.html'"
+            class="flex items-center justify-center w-full bg-gray-500 hover:bg-gray-600 px-4 py-2 rounded-md text-white font-semibold transition"
+          >
+            Sair da Conta
+          </button>
+        </nav>
+      </div>
 
-        <!-- Cards de Ações -->
-        <section class="flex flex-wrap justify-center gap-8 w-full max-w-5xl mb-14">
-            <!-- Card 1 -->
-            <div class="bg-white rounded-lg shadow-md p-8 text-center flex flex-col items-center transition hover:-translate-y-1 hover:shadow-lg w-full sm:w-[calc(50%-1rem)] max-w-sm">
-                <h2 class="text-xl text-[#34495e] font-bold mb-2">Criar Nova Movimentação</h2>
-                <p class="text-gray-600 mb-5">Adicione novas entradas ou saídas de dinheiro ao seu controle financeiro.</p>
-                <button onclick="window.location.href='movimentacoes/criarMovimentacoes.html'"
-                    class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md">
-                    Criar Movimentação
-                </button>
-            </div>
+      <footer class="text-sm text-center py-4 bg-[#243342]">&copy; 2025</footer>
+    </aside>
 
-            <!-- Card 2 -->
-            <div class="bg-white rounded-lg shadow-md p-8 text-center flex flex-col items-center transition hover:-translate-y-1 hover:shadow-lg w-full sm:w-[calc(50%-1rem)] max-w-sm">
-                <h2 class="text-xl text-[#34495e] font-bold mb-2">Visualizar Movimentações</h2>
-                <p class="text-gray-600 mb-5">Consulte todas as suas movimentações financeiras registradas.</p>
-                <button onclick="window.location.href='movimentacoes/listarMovimentacoes.html'"
-                    class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md">
-                    Visualizar Movimentação
-                </button>
-            </div>
+    <!-- Overlay para mobile -->
+    <div id="overlay" class="fixed inset-0 bg-black opacity-50 z-30 hidden md:hidden"></div>
 
-            <div class="bg-white rounded-lg shadow-md p-8 text-center flex flex-col items-center transition hover:-translate-y-1 hover:shadow-lg w-full sm:w-[calc(50%-1rem)] max-w-sm">
-                <h2 class="text-xl text-[#34495e] font-bold mb-2">Meu Perfil</h2>
-                <p class="text-gray-600 mb-5">Gerencie seus dados pessoais, e-mail e senha.</p>
-                <button onclick="window.location.href='../frontend/infoUsuario.html'"
-                    class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md">
-                    Acessar Perfil
-                </button>
-            </div>
+    <!-- Conteúdo Principal -->
+    <div class="md:ml-64 flex flex-col min-h-screen">
+      <header class="bg-[#2c3e50] text-white py-5 text-center shadow-md">
+        <h1 class="text-2xl md:text-3xl font-bold">
+          Dashboard de Movimentações Financeiras
+        </h1>
+      </header>
 
+      <main class="p-5 flex flex-col items-center">
+        <section
+          class="flex flex-wrap justify-center gap-8 w-full max-w-5xl mb-14"
+        >
+          <div
+            class="bg-white rounded-lg shadow-md p-8 text-center flex flex-col items-center w-full sm:w-[calc(50%-1rem)] max-w-sm"
+          >
+            <h2 class="text-xl text-[#34495e] font-bold mb-2">
+              Criar Nova Movimentação
+            </h2>
+            <p class="text-gray-600 mb-5">
+              Adicione novas entradas ou saídas de dinheiro ao seu controle
+              financeiro.
+            </p>
+            <button
+              onclick="window.location.href='movimentacoes/criarMovimentacoes.html'"
+              class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md"
+            >
+              Criar Movimentação
+            </button>
+          </div>
 
+          <div
+            class="bg-white rounded-lg shadow-md p-8 text-center flex flex-col items-center w-full sm:w-[calc(50%-1rem)] max-w-sm"
+          >
+            <h2 class="text-xl text-[#34495e] font-bold mb-2">
+              Visualizar Movimentações
+            </h2>
+            <p class="text-gray-600 mb-5">
+              Consulte todas as suas movimentações financeiras registradas.
+            </p>
+            <button
+              onclick="window.location.href='movimentacoes/listarMovimentacoes.html'"
+              class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md"
+            >
+              Visualizar Movimentação
+            </button>
+          </div>
         </section>
 
-        <hr class="w-full max-w-5xl border-gray-300 mb-10">
+        <hr class="w-full max-w-5xl border-gray-300 mb-10" />
 
-        <!-- Tabela de Movimentações -->
         <section class="bg-white rounded-lg shadow-md p-8 w-full max-w-5xl">
-            <h2 class="text-2xl text-[#34495e] font-bold mb-5 text-center">Minhas Movimentações Recentes</h2>
-            <div class="overflow-x-auto">
-                <table class="w-full border-collapse">
-                    <thead>
-                        <tr>
-                            <th class="bg-gray-100 border p-3 text-left">ID</th>
-                            <th class="bg-gray-100 border p-3 text-left">Descrição</th>
-                            <th class="bg-gray-100 border p-3 text-left">Tipo</th>
-                            <th class="bg-gray-100 border p-3 text-left">Valor</th>
-                            <th class="bg-gray-100 border p-3 text-left">Data</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="even:bg-gray-50">
-                            <td class="border p-3">001</td>
-                            <td class="border p-3">Aluguel Apartamento</td>
-                            <td class="border p-3">Saída</td>
-                            <td class="border p-3">R$ 1.500,00</td>
-                            <td class="border p-3">15/06/2025</td>
-                        </tr>
-
-                        <tr class="even:bg-gray-50">
-                            <td class="border p-3">002</td>
-                            <td class="border p-3">Salário Mensal</td>
-                            <td class="border p-3">Entrada</td>
-                            <td class="border p-3">R$ 4.000,00</td>
-                            <td class="border p-3">05/06/2025</td>
-                        </tr>
-
-                        <tr class="even:bg-gray-50">
-                            <td class="border p-3">003</td>
-                            <td class="border p-3">Supermercado</td>
-                            <td class="border p-3">Saída</td>
-                            <td class="border p-3">R$ 350,00</td>
-                            <td class="border p-3">10/06/2025</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+          <h2 class="text-2xl text-[#34495e] font-bold mb-5 text-center">
+            Minhas Movimentações Recentes
+          </h2>
+          <div class="overflow-x-auto">
+            <table class="w-full border-collapse">
+              <thead>
+                <tr>
+                  <th class="bg-gray-100 border p-3 text-left">ID</th>
+                  <th class="bg-gray-100 border p-3 text-left">Descrição</th>
+                  <th class="bg-gray-100 border p-3 text-left">Tipo</th>
+                  <th class="bg-gray-100 border p-3 text-left">Valor</th>
+                  <th class="bg-gray-100 border p-3 text-left">Data</th>
+                </tr>
+              </thead>
+              <tbody id="movimentacoes-tbody"></tbody>
+            </table>
+          </div>
         </section>
-    </main>
+      </main>
 
-    <!-- Rodapé -->
-    <footer class="bg-[#2c3e50] text-white text-center py-4 shadow-inner mt-auto">
+      <footer class="bg-[#2c3e50] text-white text-center py-4 shadow-inner">
         <p>&copy; 2025 Dashboard de Movimentações. Todos os direitos reservados.</p>
-    </footer>
+      </footer>
+    </div>
 
-</body>
+    <script>
+      const idUsuario = localStorage.getItem("usuario_id");
+
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+      const menuToggle = document.getElementById("menu-toggle");
+
+      menuToggle.addEventListener("click", () => {
+        sidebar.classList.toggle("-translate-x-full");
+        overlay.classList.toggle("hidden");
+      });
+
+      overlay.addEventListener("click", () => {
+        sidebar.classList.add("-translate-x-full");
+        overlay.classList.add("hidden");
+      });
+
+      document.getElementById("btn-excluir").addEventListener("click", function () {
+        if (confirm("Tem certeza que deseja excluir sua conta?")) {
+          fetch("/sistema-php/sistema-php/backend/usuarios/excluirUsuario.php", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: idUsuario }),
+          })
+            .then((resp) => resp.json())
+            .then((res) => {
+              if (res.status === "ok") {
+                alert("Conta excluída com sucesso.");
+                window.location.href = "../frontend/usuarios/login.html";
+              } else {
+                alert("Erro ao excluir: " + res.mensagem);
+              }
+            })
+            .catch(() => alert("Erro ao se comunicar com o servidor."));
+        }
+      });
+
+      fetch('/sistema-php/sistema-php/backend/movimentacoes/listarMovimentacoes.php')
+        .then((resp) => resp.json())
+        .then((res) => {
+          if (res.status === "ok" && Array.isArray(res.dados)) {
+            const tbody = document.getElementById("movimentacoes-tbody");
+            tbody.innerHTML = "";
+
+            const recentes = res.dados
+              .sort((a, b) => new Date(b.data) - new Date(a.data))
+              .slice(0, 3);
+
+            recentes.forEach((mov) => {
+              const row = `
+                <tr class="even:bg-gray-50">
+                  <td class="border p-3">${mov.id}</td>
+                  <td class="border p-3">${mov.descricao}</td>
+                  <td class="border p-3">${mov.tipo}</td>
+                  <td class="border p-3">R$ ${parseFloat(mov.valor).toFixed(2)}</td>
+                  <td class="border p-3">${new Date(mov.data).toLocaleDateString("pt-BR")}</td>
+                </tr>`;
+              tbody.insertAdjacentHTML("beforeend", row);
+            });
+          } else {
+            document.getElementById("movimentacoes-tbody").innerHTML = `
+              <tr><td colspan="5" class="text-center p-4 text-gray-500">Nenhuma movimentação encontrada.</td></tr>`;
+          }
+        })
+        .catch(() => alert("Erro ao carregar movimentações."));
+    </script>
+  </body>
 </html>

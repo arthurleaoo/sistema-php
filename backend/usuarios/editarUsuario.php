@@ -2,6 +2,8 @@
 session_start();
 require_once '../db/conexao.php';
 
+header('Content-Type: application/json');
+
 if (!isset($_SESSION['usuario_id'])) {
     echo json_encode(['status' => 'erro', 'mensagem' => 'Usuário não autenticado.']);
     exit;
@@ -9,12 +11,13 @@ if (!isset($_SESSION['usuario_id'])) {
 
 $id = $_SESSION['usuario_id'];
 
-// Coleta os dados do formulário
-$nome  = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-$email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-$senha = filter_input(INPUT_POST, 'senha', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+$input = json_decode(file_get_contents('php://input'), true);
 
-// Validação básica
+$nome  = htmlspecialchars(trim($input['nome'] ?? ''));
+$email = filter_var(trim($input['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+$senha = htmlspecialchars(trim($input['senha'] ?? ''));
+
+// Validação
 if (empty($nome) || empty($email) || empty($senha)) {
     echo json_encode(['status' => 'erro', 'mensagem' => 'Todos os campos são obrigatórios.']);
     exit;
@@ -33,13 +36,8 @@ try {
         ':id' => $id
     ]);
 
-    // Redireciona para o login com parâmetro de sucesso
-    header('Location: /sistema-php/sistema-php/frontend/usuarios/login.html?atualizado=1');
-    exit;
-
+    echo json_encode(['status' => 'ok', 'mensagem' => 'Perfil atualizado com sucesso.']);
 } catch (PDOException $e) {
-    // Redireciona de volta para a tela de edição em caso de erro
-    header('Location: /sistema-php/sistema-php/frontend/usuarios/editar.html?erro=cadastro');
-    exit;
+    echo json_encode(['status' => 'erro', 'mensagem' => 'Erro ao atualizar perfil.']);
 }
 ?>
